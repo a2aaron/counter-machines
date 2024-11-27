@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CounterMachines}",
+            "name": "Debug CounterMachines",
+            "program": "${workspaceFolder:CounterMachines}/.build/debug/CounterMachines",
+            "preLaunchTask": "swift: Build Debug CounterMachines"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CounterMachines}",
+            "name": "Release CounterMachines",
+            "program": "${workspaceFolder:CounterMachines}/.build/release/CounterMachines",
+            "preLaunchTask": "swift: Build Release CounterMachines"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CounterMachines}",
+            "name": "Debug Interpreter",
+            "program": "${workspaceFolder:CounterMachines}/.build/debug/Interpreter",
+            "preLaunchTask": "swift: Build Debug Interpreter"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CounterMachines}",
+            "name": "Release Interpreter",
+            "program": "${workspaceFolder:CounterMachines}/.build/release/Interpreter",
+            "preLaunchTask": "swift: Build Release Interpreter"
+        }
+    ]
+}
