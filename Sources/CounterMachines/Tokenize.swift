@@ -19,6 +19,12 @@ public func tokenize(_ text: String) -> [Token] {
             // Tokenize the colon
             current.append(char)
             tokenize_current()
+        } else if char == ";" {
+            // Tokenize what's been already seen (end the current token)
+            tokenize_current()
+            // Tokenize the semicolon
+            current.append(char)
+            tokenize_current()
         } else {
             current.append(char)
         }
@@ -30,7 +36,7 @@ public func tokenize(_ text: String) -> [Token] {
     return tokens
 }
 
-public enum Token: Equatable {
+public enum Token: Equatable, Sendable {
     case incr
     case decr
     case jez
@@ -38,6 +44,7 @@ public enum Token: Equatable {
     case as_
     case end
     case colon
+    case semicolon
     case repeat_
     case text(String)
     case num(Int)
@@ -52,6 +59,7 @@ public enum Token: Equatable {
         case "AS": .as_
         case "REPEAT": .repeat_
         case ":": .colon
+        case ";": .semicolon
         case let text:
             if let num = Int(text) {
                 .num(num)

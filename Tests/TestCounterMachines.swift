@@ -3,7 +3,7 @@ import Testing
 @testable import CounterMachines
 
 @Suite("Tokenization Suite")
-struct name {
+struct TokenizationSuite {
     @Test("Tokenize Simple Words")
     func testTokenizeSimple() {
         let program = """
@@ -77,5 +77,41 @@ struct name {
         let actual = tokenize(program)
 
         #expect(expected == actual, "Mismatched tokenization result")
+    }
+}
+
+@Suite("Parsing Suite")
+struct ParsingSuite {
+    @Test("Parse Add2")
+    func testParseAdd2() throws {
+        let program = """
+            DEFINE ADD2 reg:REG AS
+                INCR reg
+                INCR reg
+            END
+
+            ADD2 register;
+            ADD2 register2 ;
+            """
+
+        let tokens = tokenize(program)
+        let actual = try parse(tokens: tokens)
+
+        let expected = Program(
+            functionDefinitions: [
+                FunctionDefinition(
+                    name: "ADD2",
+                    args: [
+                        FunctionArg(name: "reg", type: .register)
+                    ],
+                    body: [.incr(Register("reg")), .incr(Register("reg"))])
+            ],
+            statements: [
+                .call("ADD2", [.text("register")]),
+                .call("ADD2", [.text("register2")]),
+            ]
+        )
+
+        #expect(expected == actual)
     }
 }
