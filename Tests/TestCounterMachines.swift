@@ -64,9 +64,9 @@ struct TokenizationSuite {
             .define, .text("ADD"),
             .text("reg"), .colon, .text("REG"),
             .text("num"), .colon, .text("NUM"),
-            .as_,
+            .as,
 
-            .repeat_, .text("num"),
+            .repeat, .text("num"),
             .incr, .text("reg"),
             .end,
             .end,
@@ -109,6 +109,45 @@ struct ParsingSuite {
             statements: [
                 .call("ADD2", [.text("register")]),
                 .call("ADD2", [.text("register2")]),
+            ]
+        )
+
+        #expect(expected == actual)
+    }
+
+    @Test("Parse AddN")
+    func testParseAddN() throws {
+        let program = """
+            DEFINE ADDN reg:REG val:NUM AS
+                REPEAT val
+                    INCR reg
+                END
+            END
+
+            ADDN register 5;
+            """
+
+        let tokens = tokenize(program)
+        let actual = try parse(tokens: tokens)
+
+        let expected = Program(
+            functionDefinitions: [
+                FunctionDefinition(
+                    name: "ADDN",
+                    args: [
+                        FunctionArg(name: "reg", type: .register),
+                        FunctionArg(name: "val", type: .number),
+                    ],
+                    body: [
+                        .repeat(
+                            .text("val"),
+                            [.incr(Register("reg"))]
+                        )
+                    ]
+                )
+            ],
+            statements: [
+                .call("ADDN", [.text("register"), .number(5)])
             ]
         )
 

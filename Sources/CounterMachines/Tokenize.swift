@@ -41,11 +41,11 @@ public enum Token: Equatable, Sendable {
     case decr
     case jez
     case define
-    case as_
+    case `as`
     case end
     case colon
     case semicolon
-    case repeat_
+    case `repeat`
     case text(String)
     case num(Int)
 
@@ -56,8 +56,8 @@ public enum Token: Equatable, Sendable {
         case "JEZ": .jez
         case "DEFINE": .define
         case "END": .end
-        case "AS": .as_
-        case "REPEAT": .repeat_
+        case "AS": .as
+        case "REPEAT": .repeat
         case ":": .colon
         case ";": .semicolon
         case let text:

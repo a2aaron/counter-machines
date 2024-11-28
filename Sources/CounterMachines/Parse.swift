@@ -41,7 +41,7 @@ struct ParseFunctionDefinition: ProductionRule {
         try tokens.consume(.define)
         let name = try tokens.consume_text()
         let args = try KleeneStar(of: ParseFunctionArgs()).parse(tokens: &tokens)
-        try tokens.consume(.as_)
+        try tokens.consume(.as)
         let body = try KleeneStar(of: ParseStatement()).parse(tokens: &tokens)
         try tokens.consume(.end)
         return FunctionDefinition(name: name, args: args, body: body)
@@ -125,12 +125,28 @@ struct KleeneStar<Output>: ProductionRule {
 struct ParseStatement: ProductionRule {
     typealias Output = Statement
 
-    var ruleName: String { return "Statement" }
+    var ruleName: String { return "statement" }
     var ruleDef: String { return "<JEZ> | <INCR> | <DECR> | <CALL>" }
 
     func parse(tokens: inout TokenStream) throws -> Statement {
-        let rule = Or(ParseJez(), ParseIncr(), ParseDecr(), ParseCall())
+        let rule = Or(ParseRepeat(), ParseJez(), ParseIncr(), ParseDecr(), ParseCall())
         return try rule.parse(tokens: &tokens)
+    }
+}
+
+struct ParseRepeat: ProductionRule {
+    typealias Output = Statement
+
+    var ruleName: String { return "repeat" }
+    var ruleDef: String { return "REPEAT <VALUE> (<statement>)* END" }
+
+    func parse(tokens: inout TokenStream) throws -> Statement {
+        try tokens.consume(.repeat)
+        let value = try ParseValue().parse(tokens: &tokens)
+        let statements = try KleeneStar(of: ParseStatement()).parse(tokens: &tokens)
+        try tokens.consume(.end)
+
+        return .repeat(value, statements)
     }
 }
 
@@ -296,6 +312,7 @@ struct FunctionArg: Equatable {
 }
 
 enum Statement: Equatable {
+    case `repeat`(Value, [Statement])
     case jez(Register, Label)
     case incr(Register)
     case decr(Register)
